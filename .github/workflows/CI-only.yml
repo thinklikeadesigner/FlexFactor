@@ -23,6 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Run the action
+      - uses: ./
       - name: 'Test: which'
         run: which pnpm; which pnpx
 
