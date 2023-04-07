@@ -7,7 +7,7 @@
 
 	let loading = false;
 	let error = false;
-
+	console.log('haha');
 	const addTodo: SubmitFunction = (input) => {
 		loading = true;
 		console.log(input);
