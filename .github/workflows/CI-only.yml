@@ -7,8 +7,6 @@ on:
   pull_request:
     branches:
       - main
-      - 
-      - 
 
 jobs:
   build:
@@ -19,25 +17,26 @@ jobs:
       matrix:
         node-version: [18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        pnpm:
-          - 8.1.0
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Run the action
-        uses: ./
-        with:
-          version: 8.1.0
-      - name: 'Test: which'
-        run: which pnpm; which pnpx
+    
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+    - name: Run the action
+      uses: ./
+      with:
+        version: 8.1.0
+    - name: 'Test: which'
+      run: which pnpm; which pnpx
 
-      - name: 'Test: install'
-        run: pnpm install
+    - name: 'Test: install'
+      run: pnpm install
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
         
-    # - run: npm run install
-    # - run: CI=true npm run test
-    # - run: CI=false npm run static-build
+    - run: npm run install-all
+    - run: CI=true npm run test
+    - run: CI=false npm run static-build
