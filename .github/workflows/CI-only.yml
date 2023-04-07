@@ -1,41 +1,12 @@
-# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: Node.js CI
-
 on:
-  pull_request:
-    branches:
-      - main
+  - push
+  - pull_request
 
 jobs:
-  build:
+  install:
     runs-on: ubuntu-latest
-    
-
-    strategy:
-      matrix:
-        node-version: [18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
 
     steps:
-    
-    - uses: actions/checkout@v2
-    - name: Run the action
-      uses: ./
-      with:
-        version: 8.1.0
-    - name: 'Test: which'
-      run: which pnpm; which pnpx
-
-    - name: 'Test: install'
-      run: pnpm install
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        
-    - run: npm run install-all
-    - run: CI=true npm run test
-    - run: CI=false npm run static-build
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8.x
