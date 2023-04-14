@@ -2,13 +2,16 @@ import { writable } from 'svelte/store';
 
 const UserStore = writable({
 	height: 64,
-	weight: 145,
+	currentWeight: 145,
 	sex: 'female',
 	age: 29,
 	bf: 0.22,
 	activityLevel: 'sedentary',
 	fitnessLevel: 'intermediate',
-	surplus: 5
+	calorieSurplus: 5,
+	exerciseName: 'benchPress',
+	heightInInches: 64,
+	oneRepMax: 105
 });
 
 export default UserStore;

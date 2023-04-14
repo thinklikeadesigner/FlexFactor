@@ -1,8 +1,9 @@
 <script lang="ts">
+	import UserStore from '../stores/UserStore';
 	import { SlideToggle, RadioGroup, RadioItem, RangeSlider } from '@skeletonlabs/skeleton';
 	import { getFitnessLevel } from '../utils/FitnessLevel';
+	import { onMount } from 'svelte';
 
-	let name: string;
 	let age: number;
 	let sex: string = 'male';
 	let currentWeight: number;
@@ -11,28 +12,55 @@
 	let oneRepMax: number;
 	$: fitnessLevel = '';
 
+	onMount(() => {
+		sex = $UserStore.sex;
+		age = $UserStore.age;
+		currentWeight = $UserStore.currentWeight;
+		heightInInches = $UserStore.heightInInches;
+		exerciseName = $UserStore.exerciseName;
+		oneRepMax = $UserStore.oneRepMax;
+	});
+
 	const handleSubmit = () => {
-		if (!name || !age || !currentWeight || !oneRepMax) return;
+		if (!age || !currentWeight || !oneRepMax) return;
 		fitnessLevel = getFitnessLevel(sex, exerciseName, currentWeight, oneRepMax);
-		console.log({ name, age, sex, currentWeight, exerciseName, oneRepMax, fitnessLevel });
+		console.log({ age, sex, currentWeight, exerciseName, oneRepMax, fitnessLevel });
 		console.log(fitnessLevel);
+		UserStore.update((data) => {
+			data.fitnessLevel = fitnessLevel;
+			data.sex = sex;
+			data.age = age;
+			data.currentWeight = currentWeight;
+			data.exerciseName = exerciseName;
+			data.heightInInches = heightInInches;
+			data.oneRepMax = oneRepMax;
+			return data;
+		});
 	};
 
 	const toggleSex = () => {
 		if (sex === 'male') {
 			sex = 'female';
+			UserStore.update((data) => {
+				data.sex = sex;
+				return data;
+			});
 		} else if (sex === 'female') {
 			sex = 'male';
+			UserStore.update((data) => {
+				data.sex = sex;
+				return data;
+			});
 		}
 	};
 
-	$: heightInFeetInches = convertInchestoFeet(heightInInches)
+	$: heightInFeetInches = convertInchestoFeet(heightInInches);
 
 	const convertInchestoFeet = (heightInInches: number) => {
-		if (heightInInches < 48 ) return;
-		if (heightInInches % 12 === 0) return `${heightInInches / 12} ft`
-		else return `${Math.trunc(heightInInches/12)}ft, ${heightInInches % 12}in`
-	}
+		if (heightInInches < 48) return;
+		if (heightInInches % 12 === 0) return `${heightInInches / 12} ft`;
+		else return `${Math.trunc(heightInInches / 12)}ft, ${heightInInches % 12}in`;
+	};
 
 	$: sexLabel = `${sex.charAt(0).toUpperCase()}${sex.slice(1)}`;
 </script>
@@ -45,10 +73,6 @@
 <h1 class="text-center">Flex Factor 💪🏼</h1>
 
 <form on:submit|preventDefault={handleSubmit} class="flex flex-col gap-3 mt-12 max-w-xl m-auto">
-	<label for="name" class="flex justify-between items-center gap-3"
-		>Name <input type="text" id="name" bind:value={name} class="input w-3/5" required /></label
-	>
-
 	<label for="age" class="flex justify-between items-center"
 		>Age
 		<input
@@ -80,10 +104,18 @@
 
 	<label for="height" class="flex justify-between items-center"
 		>Height
-		<div class="w-3/5 self-left"><RangeSlider name="height" bind:value={heightInInches} min={48} max={96} step={1} class="w-auto">
+		<div class="w-3/5 self-left">
+			<RangeSlider
+				name="height"
+				bind:value={heightInInches}
+				min={48}
+				max={96}
+				step={1}
+				class="w-auto"
+			>
 				<div class="text-sm">{heightInFeetInches}</div>
-		</RangeSlider>
-	</div>
+			</RangeSlider>
+		</div>
 	</label>
 
 	<h4>Let's determine your fitness level</h4>

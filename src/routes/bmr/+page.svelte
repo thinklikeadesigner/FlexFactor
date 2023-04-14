@@ -2,6 +2,7 @@
 	import { enhance, type SubmitFunction } from '$app/forms';
 	import GainsCalculator from '$lib/components/gainsCalculator.svelte';
 	import type { ActionData, PageData } from './$types';
+	import UserStore from '../../stores/UserStore';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -20,7 +21,8 @@
 	};
 </script>
 
-<pre>{JSON.stringify(data, null, 2)}</pre>
+<!-- svelte-ignore missing-declaration -->
+<pre>	{JSON.stringify($UserStore)}</pre>
 <div class="py-10">
 	<div class="card p-4">
 		<ul class="list">
@@ -72,29 +74,6 @@
 				<p class="text-error-400">This field is required</p>
 			{:else}
 				<div class="flex flex-row justify-between">
-					<label class="label" for="bmrType"
-						><span>bmrType</span>
-						<input class="input input-error w-1/2" type="text" name="bmrType" /></label
-					>
-					<label class="label" for="weight">
-						<span>weight</span>
-						<input class="input input-error w-1/2" type="text" name="weight" />
-					</label>
-					<label class="label" for="height"
-						><span>height</span><input
-							class="input input-error w-1/2"
-							type="text"
-							name="height"
-						/></label
-					>
-					<label class="label" for="age"
-						><span>age</span>
-						<input class="input input-error w-1/2" type="text" name="age" />
-					</label>
-					<label class="label" for="sex"
-						><span>sex</span>
-						<input class="input input-error w-1/2" type="text" name="sex" />
-					</label>
 					<label class="label" for="bf"
 						><span>bf</span>
 						<input class="input input-error w-1/2" type="text" name="bf" />
@@ -114,6 +93,5 @@
 		{/if}
 	</div>
 </div>
-
 
 <GainsCalculator />

@@ -4,17 +4,14 @@
 	import GainsCalculator from '$lib/components/gainsCalculator.svelte';
 	import UserStore from '../../stores/UserStore';
 
-	let sex = 'male';
-	let fitnessLevel = 'beginner';
+	let sex = $UserStore.sex;
 	let calorieSurplus = 10;
-
 	let calorieSurplusRange = [2.5, 5, 10, 15, 25];
+	let bodyFat: number;
+	let bodyFatMin: number;
+	let bodyFatMax: number;
 
-	let bodyFat = 10;
-	let bodyFatMin = 4;
-	let bodyFatMax = 20;
-
-	$: if (sex === 'male') {
+	if (sex === 'male') {
 		bodyFat = 10;
 		bodyFatMin = 4;
 		bodyFatMax = 20;
@@ -24,39 +21,25 @@
 		bodyFatMax = 40;
 	}
 
-	let values: { sex: string; fitnessLevel: string; bodyFat: number; calorieSurplus: number };
+	let values: { bodyFat: number; calorieSurplus: number };
 
-	$: values = { sex, fitnessLevel, bodyFat, calorieSurplus };
+	$: values = { bodyFat, calorieSurplus };
 
 	let pRatio = 1;
-	$: pRatio = determinePRatio(sex, calorieSurplus, bodyFat, fitnessLevel);
+	$: {
+		pRatio = determinePRatio($UserStore.sex, calorieSurplus, bodyFat, $UserStore.fitnessLevel);
+		UserStore.update((data) => {
+			data.bf = bodyFat;
+			data.calorieSurplus = calorieSurplus;
+			return data;
+		});
+	}
 </script>
 
-<pre>{$UserStore.weight}</pre>
+<pre>{JSON.stringify($UserStore)}</pre>
 
 <form action="">
-	<h2 >Calculate p-ratio</h2>
-	<h4>Sex</h4>
-	<div>
-		<label for="male">Male: <input type="radio" name="sex" bind:group={sex} value="male" /></label>
-
-		<label for="female"
-			>Female: <input type="radio" name="sex" bind:group={sex} value="female" /></label
-		>
-	</div>
-
-	<h4>Fitness Level</h4>
-	<div class="flex items-center">
-		<label for="Beginner">Beginner:</label>
-		<input type="radio" name="level" bind:group={fitnessLevel} value="beginner" />
-
-		<label for="Intermediate">Intermediate:</label>
-		<input type="radio" name="level" bind:group={fitnessLevel} value="intermediate" />
-
-		<label for="Advanced">Advanced:</label>
-		<input type="radio" name="level" bind:group={fitnessLevel} value="advanced" />
-	</div>
-
+	<h2>Calculate p-ratio</h2>
 	<RangeSlider name="range-slider" bind:value={bodyFat} min={bodyFatMin} max={bodyFatMax} step={1}>
 		<div class="flex justify-between items-center">
 			<h4>BodyFat %</h4>
