@@ -1,51 +1,48 @@
 <script>
+	import { UserStore } from './../../stores/UserStore';
 	import { RangeSlider } from '@skeletonlabs/skeleton';
 	import { calculateTimeToGains } from '../../utils/MuscleGainCalculator';
 
-	let sex = 'male';
-	let startingWeight = 150;
-	let fitnessLevel = 'intermediate';
 	let desiredGains = 5;
 
 	let gainsMin = 1;
 	let gainsMax = 25;
 
-	$: timeToGains = calculateTimeToGains(sex, startingWeight, fitnessLevel, desiredGains);
-	$:([minTime, maxtime] = timeToGains)
+	$: timeToGains = calculateTimeToGains(
+		$UserStore.sex,
+		$UserStore.currentWeight,
+		$UserStore.fitnessLevel,
+		desiredGains
+	);
+	$: [minTime, maxtime] = timeToGains;
 
-	$: estimatedMessage = `You should reach your goals in ${minTime} to ${maxtime} months`
-	$: if (!minTime || !maxtime) {estimatedMessage = 'Could not calculate estimate'};
-	
+	$: estimatedMessage = `You should reach your goals in ${minTime} to ${maxtime} months`;
+	$: if (!minTime || !maxtime) {
+		estimatedMessage = 'Could not calculate estimate';
+	}
 </script>
 
-<form action="">
-	<h4>Sex</h4>
-	<div>
-		<label for="male">Male: <input type="radio" name="sex" bind:group={sex} value="male" /></label>
+<form class="flex flex-col gap-3 mt-12 max-w-xl m-auto" action="">
+	<label for="weight"
+		>Current Weight: <input
+			type="number"
+			bind:value={$UserStore.currentWeight}
+			min={80}
+			name="weight"
+			class="text-white input"
+		/>lbs</label
+	>
 
-		<label for="female"
-			>Female: <input type="radio" name="sex" bind:group={sex} value="female" /></label
-		>
-	</div>
-
-	<h4>Fitness Level</h4>
-	<div class="flex items-center">
-		<label for="level">Beginner:</label>
-		<input type="radio" name="level" bind:group={fitnessLevel} value="beginner" />
-
-		<label for="level">Intermediate:</label>
-		<input type="radio" name="level" bind:group={fitnessLevel} value="intermediate" />
-
-		<label for="level">Advanced:</label>
-		<input type="radio" name="level" bind:group={fitnessLevel} value="advanced" />
-	</div>
-  <label for="weight">Current Weight: <input type="number" bind:value={startingWeight} min={80} name="weight" class="text-black">lbs</label>
-
-
-	<RangeSlider name="range-slider" bind:value={startingWeight} min={80} max={300} step={1}>
+	<RangeSlider
+		name="range-slider"
+		bind:value={$UserStore.currentWeight}
+		min={80}
+		max={300}
+		step={1}
+	>
 		<div class="flex justify-between items-center">
 			<h4>Current Weight</h4>
-			<div class="text-xs">{startingWeight} / {300}</div>
+			<div class="text-xs">{$UserStore.currentWeight} / {300}</div>
 		</div>
 	</RangeSlider>
 	<RangeSlider name="range-slider" bind:value={desiredGains} min={gainsMin} max={gainsMax} step={1}>

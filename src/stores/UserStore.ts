@@ -1,6 +1,8 @@
-import { writable } from 'svelte/store';
+import { persisted } from 'svelte-local-storage-store';
 
-const UserStore = writable({
+// First param `UserStore` is the local storage key.
+// Second param is the initial value.
+export const UserStore = persisted('UserStore', {
 	height: 64,
 	currentWeight: 145,
 	sex: 'female',

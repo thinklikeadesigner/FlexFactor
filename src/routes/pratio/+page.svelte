@@ -36,9 +36,9 @@
 	}
 </script>
 
-<pre>{JSON.stringify($UserStore)}</pre>
+<pre>{JSON.stringify($UserStore, null, 2)}</pre>
 
-<form action="">
+<form class="flex flex-col gap-3 mt-12 max-w-xl m-auto" action="">
 	<h2>Calculate p-ratio</h2>
 	<RangeSlider name="range-slider" bind:value={bodyFat} min={bodyFatMin} max={bodyFatMax} step={1}>
 		<div class="flex justify-between items-center">
@@ -50,13 +50,10 @@
 	<h4>Calorie Surplus</h4>
 	<div class="flex items-center">
 		{#each calorieSurplusRange as value}
-			<label><input type="radio" {value} bind:group={calorieSurplus} name="" id="" />{value}%</label
+			<label class="flex justify-between items-center"
+				><input type="radio" {value} bind:group={calorieSurplus} name="" id="" />{value}%</label
 			>
 		{/each}
-	</div>
-
-	<div class="bg-white text-black p-5 my-5 rounded-3xl">
-		<h2>Your p-ratio:{pRatio}</h2>
 	</div>
 </form>
 
